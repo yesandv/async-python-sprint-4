@@ -1,17 +1,26 @@
 from http import HTTPStatus
-from typing import Callable
+from ipaddress import ip_address, ip_network
 
-from pydantic import BaseModel
+from fastapi import FastAPI
+from starlette.middleware.base import (
+    BaseHTTPMiddleware,
+    RequestResponseEndpoint,
+)
 from starlette.requests import Request
 from starlette.responses import Response
 
 
-class BlackListMiddleware(BaseModel):
-    black_list: set[str]
+class BlackListMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app: FastAPI, black_list: set[str]):
+        super().__init__(app)
+        self.black_list = black_list
 
-    async def __call__(
-            self, request: Request, call_next: Callable
+    async def dispatch(
+            self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
-        if request.client.host in self.black_list:
-            return Response(status_code=HTTPStatus.FORBIDDEN)
+        client_ip = request.headers.get("X-Forwarded-For")
+        if client_ip:
+            for ip in self.black_list:
+                if ip_address(client_ip) in ip_network(ip):
+                    return Response(status_code=HTTPStatus.FORBIDDEN)
         return await call_next(request)

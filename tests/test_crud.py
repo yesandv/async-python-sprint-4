@@ -89,3 +89,11 @@ async def test_url_is_taken_down(
     statement = select(UrlModel).where(UrlModel.id == short_url)
     res = await test_session.execute(statement)
     assert res.scalar_one().is_taken_down
+
+
+@pytest.mark.asyncio
+async def test_forbidden(client: AsyncClient):
+    response = await client.get(
+        "db/ping", headers={"X-Forwarded-For": "10.0.0.1"}
+    )
+    assert response.status_code == HTTPStatus.FORBIDDEN

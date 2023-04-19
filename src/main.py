@@ -1,7 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
-from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.api.db import db_router
 from src.api.urls import url_router
@@ -15,9 +14,7 @@ app = FastAPI(
     redoc_url=None,
 )
 
-middleware = BlackListMiddleware(black_list=app_settings.black_list)
-
-app.add_middleware(BaseHTTPMiddleware, dispatch=middleware)
+app.add_middleware(BlackListMiddleware, black_list=app_settings.black_list)
 app.include_router(url_router)
 app.include_router(db_router)
 

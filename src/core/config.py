@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     db: str = base_dir + "/urls.db"
     sqlite_dsn: str = Field("sqlite+aiosqlite:///" + db, env="DATABASE_DSN")
-    black_list: set[str] = set()
+    black_list: set[str] = {"10.0.0.0/8"}
 
     class Config:
         env_file = "../.env"
