@@ -20,7 +20,7 @@ async def test_shorten_url(client: AsyncClient):
     full_url = "https://www.google.com"
     response = await client.post("urls/shorten", json={"full_url": full_url})
     assert response.status_code == HTTPStatus.OK
-    assert len(response.json()["id"]) == 7
+    assert len(response.json()["id"]) == 9
 
 
 @pytest.mark.asyncio
