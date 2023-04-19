@@ -16,7 +16,7 @@ from src.core import app_settings
 from src.db import Base, get_session
 from src.main import app
 
-TEST_DB = app_settings.BASE_DIR + "/test.db"
+TEST_DB = app_settings.base_dir + "/test.db"
 TEST_DB_DSN = "sqlite+aiosqlite:///" + TEST_DB
 
 
