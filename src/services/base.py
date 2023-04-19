@@ -14,15 +14,15 @@ from src.db import Base
 class Repository(abc.ABC):
     @abc.abstractmethod
     def get(self, *args, **kwargs):
-        raise NotImplementedError
+        pass
 
     @abc.abstractmethod
     def create(self, *args, **kwargs):
-        raise NotImplementedError
+        pass
 
     @abc.abstractmethod
     def update(self, *args, **kwargs):
-        raise NotImplementedError
+        pass
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -66,8 +66,7 @@ class RepositoryDB(
     async def ping(self, session: AsyncSession) -> dict:
         try:
             await session.execute(statement=select(self._model))
-            res = {"message": "Database is up and running"}
-        except OperationalError as ex:
-            logger.exception("Error connecting to the database", ex)
-            res = {"message": "Error connecting to the database"}
-        return res
+            return {"message": "Database is up and running"}
+        except OperationalError:
+            logger.exception("Error connecting to the database")
+            return {"message": "Error connecting to the database"}
